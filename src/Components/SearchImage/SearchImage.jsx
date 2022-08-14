@@ -1,5 +1,6 @@
+import './SearchImage.css';
 import useApi from "../../Hooks/use-api";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import ImageGrid from "../ImageGrid/ImageGrid";
 
 
@@ -11,17 +12,24 @@ export default function SearchImage() {
 
     useEffect(() => {
         if (query && query.length > 2) {
-            api.get('/', { q: query, image_type: 'photo' })
+            api.get('/', {q: query, image_type: 'photo'})
                 .then(setResults)
                 .catch(setError);
+        } else if (query === "") {
+            setResults({ hits: [] });
         }
     }, [query]);
 
     return <div>
+        <div>{error}</div>
         <form>
-            <label htmlFor="query">Query</label>
-            <input name="query" placeholder="Flower, color ..." onChange={e => setQuery(e.target.value)}/>
+            <input
+                id="searchbar"
+                className="container px-4 border-solid border-2 border-sky-500 rounded-lg my-3"
+                name="query"
+                placeholder="Search ..."
+                onChange={e => setQuery(e.target.value)}/>
         </form>
-        <ImageGrid images={results.hits} />
+        {results && <ImageGrid images={results.hits}/>}
     </div>
 }
